@@ -7,15 +7,15 @@
 
 
 /*
-   Array list template emulation
+	 Array list template emulation
  */
 
 #define NUM_ALIST_INITCAPACITY 100
-#define NUM_ALIST_MAXCAPACITY 100000
+#define NUM_ALIST_MAXCAPACITY 5*1000*1000
 #define NUM_ALIST_INCREMENT 50
 
 #define alisttpl_struct(type)	\
-typedef struct _##type##_alist	{	\
+	typedef struct _##type##_alist	{	\
 		type** list;	\
 		int size;	\
 		int capacity;	\
@@ -26,7 +26,7 @@ int add_##type(type##_alist* l, type* e);	\
 int remove_##type(type##_alist* l, int n);
 
 #define alisttpl_struct_impl(type)	\
-type##_alist* create_##type##_alist()	\
+	type##_alist* create_##type##_alist()	\
 {	\
 	type##_alist* p = (type##_alist*)malloc(sizeof(type));	\
 	p->list = (type**)malloc(NUM_ALIST_INITCAPACITY*(sizeof(type*)));	\
@@ -84,5 +84,4 @@ int remove_##type(type##_alist* l, int n)	\
 	}	\
 	return 0;	\
 }
-
 #endif

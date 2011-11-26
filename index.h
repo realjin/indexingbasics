@@ -43,8 +43,8 @@ typedef docindex_entry_alist docindex;
  *-----------------------*/
 invindex* create_invindex();
 posting_alist* get_postings(invindex* ii, uint termid);
-uint get_tf_from_postings(posting_alist* postings, uint docid);
-uint get_tf_from_ii(invindex* ii, uint docid, uint termid, posting_alist** postings);
+int get_tf_from_postings(posting_alist* postings, uint docid);
+int get_tf_from_ii(invindex* ii, uint docid, uint termid, posting_alist** postings);
 int add_tf_to_ii(invindex* ii, uint docid, uint termid, uint tf);
 
 #endif
