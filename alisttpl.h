@@ -11,7 +11,7 @@
  */
 
 #define NUM_ALIST_INITCAPACITY 100
-#define NUM_ALIST_MAXCAPACITY 1000
+#define NUM_ALIST_MAXCAPACITY 100000
 #define NUM_ALIST_INCREMENT 50
 
 #define alisttpl_struct(type)	\
@@ -54,6 +54,7 @@ int expand_##type##_alist(type##_alist* l)	\
 			/*size unchanged*/	\
 		}	\
 	}	\
+	return 0;\
 }	\
 \
 int add_##type(type##_alist* l, type* e)	\
