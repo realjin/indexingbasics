@@ -44,7 +44,8 @@ static posting* desrlz_iisterm_body_entry(iis_term_body_entry* be)
 		return 0;
 	}
 	posting* p = (posting*)malloc(sizeof(posting));
-	p->did = be->did[0]<<16 + be->did[1]<<8 + be->did[2];
+	p->did = (((__u32)be->did[0])<<16) +(((__u32)be->did[1])<<8) + ((__u32)be->did[2]);
+	//printf("did=%d, be->did=%d:%d:%d\n", p->did,be->did[0],be->did[1],be->did[2]);
 	p->tf = be->tf;
 	return p;
 		
@@ -112,16 +113,19 @@ ii* load_ii(char* fn)
 		}
 		fread((void*)h->tid, sizeof(__u8), 3, f);
 		fread((void*)(&h->df), sizeof(__u32), 1, f);
+		//printf("header tid=%d:%d:%d, df=%d\n", h->tid[0],h->tid[1],h->tid[2], h->df);
 		t = desrlz_iisterm_header(h);
 		for(i=0;i<h->df;i++)	{
 			//be = load(8byte);
+			be = (iis_term_body_entry*)malloc(sizeof(iis_term_body_entry));
 			fread((void*)(&be->flag), sizeof(__u8), 1, f);
 			fread((void*)be->did, sizeof(__u8), 3, f);
 			fread((void*)(&be->tf), sizeof(__u32), 1, f);
-			be = 0;
+		//printf("body entry did=%d:%d:%d, tf=%d\n", be->did[0],be->did[1],be->did[2], be->tf);
 			pst = desrlz_iisterm_body_entry(be);
 			add_posting(t->postings, pst);
 		}
+		add_ii_term(ind, t);
 	}
 
 	fclose(f);

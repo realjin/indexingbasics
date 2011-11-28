@@ -52,5 +52,6 @@ posting_alist* get_postings(ii* ii, __u32 tid);
 int get_tf_from_postings(posting_alist* postings, __u32 did);
 int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings);
 int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf);
+void ii_show(ii* ind);
 
 #endif

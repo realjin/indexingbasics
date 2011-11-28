@@ -81,7 +81,7 @@ int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf)
 		return 1;
 	}
 	else {
-		if(did%1000<10)	{
+		if(did%4000<10)	{
 			printf("add_tf_to_ii did=%d, tid=%d, tf=%d\n", did, tid, tf);
 		}
 		p = (posting*)malloc(sizeof(posting));
@@ -104,4 +104,17 @@ int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf)
 		}
 	}
 	return 0;
+}
+
+void ii_show(ii* ind)
+{
+	int i,j;
+	printf("ind size=%d\n", ind->size);
+	for(i=0;i<ind->size;i++)	{
+		printf("term #%d : (df=%d)\n", ind->list[i]->tid, ind->list[i]->postings->size);
+		for(j=0;j<ind->list[i]->postings->size;j++)	{
+			printf("@doc%d, +%d\n",ind->list[i]->postings->list[j]->did, ind->list[i]->postings->list[j]->tf);
+		}
+		printf("==================\n");
+	}
 }

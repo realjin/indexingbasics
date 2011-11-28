@@ -9,6 +9,27 @@
 #define NSF_FOLDER_BOW "../dataset/nsf/bow";
 #define NSF_FOLDER_ABST "../dataset/nsf/abstract";
 
+int main1()
+{
+	ii* ind = create_ii_term_alist();
+	ii* loaded;
+
+	add_tf_to_ii(ind, 1, 167, 1);
+	add_tf_to_ii(ind, 1, 301, 2);
+	add_tf_to_ii(ind, 2, 301, 2);
+	add_tf_to_ii(ind, 1, 314, 1);
+
+	save_ii(ind, "ii.dat");
+	loaded = load_ii("ii.dat");
+
+	ii_show(loaded);
+
+
+
+
+
+}
+
 int main()
 {
 	//ii* ii;
@@ -63,6 +84,7 @@ int main()
 		add_tf_to_ii(ii,dlist->list[i]->docid, dlist->list[i]->termid, dlist->list[i]->tf);
 	}
 
+/*
 	for(i=0;i<ii->size;i++)	{
 		printf("term #%d : (df=%d)\n", ii->list[i]->tid, ii->list[i]->postings->size);
 		for(j=0;j<ii->list[i]->postings->size;j++)	{
@@ -70,4 +92,7 @@ int main()
 		}
 		printf("==================\n");
 	}
+	*/
+
+	save_ii(ii, "full.dat");
 }
