@@ -1,5 +1,6 @@
 #include "index.h"
 #include "reader_nsf.h"
+#include "store.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +25,7 @@ int main()
 	char* fns[150000];
 	int n;
 	int i;
+	int j;
 
 
 
@@ -59,5 +61,13 @@ int main()
 	printf("---toadd-----dlist size=%d\n", dlist->size);
 	for(i=0;i<dlist->size;i++)	{
 		add_tf_to_ii(ii,dlist->list[i]->docid, dlist->list[i]->termid, dlist->list[i]->tf);
+	}
+
+	for(i=0;i<ii->size;i++)	{
+		printf("term #%d : (df=%d)\n", ii->list[i]->tid, ii->list[i]->postings->size);
+		for(j=0;j<ii->list[i]->postings->size;j++)	{
+			printf("@doc%d, +%d\n",ii->list[i]->postings->list[j]->did, ii->list[i]->postings->list[j]->tf);
+		}
+		printf("==================\n");
 	}
 }
