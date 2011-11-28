@@ -5,23 +5,23 @@
  *-----------------------*/
 
 alisttpl_struct_impl(posting);
-alisttpl_struct_impl(invindex_entry);
+alisttpl_struct_impl(ii_term);
 
 alisttpl_struct_impl(terminfo);
-alisttpl_struct_impl(docindex_entry);
+alisttpl_struct_impl(di_entry);
 
 //desc: wrapper method
-invindex* create_invindex()
+ii* create_ii()
 {
-	return create_invindex_entry_alist();
+	return create_ii_term_alist();
 }
 
 //return: 0 if failure
-posting_alist* get_postings(invindex* ii, uint termid)
+posting_alist* get_postings(ii* ii, __u32 tid)
 {
 	int i;
 	for(i=0;i<ii->size;i++)	{
-		if(ii->list[i]->termid==termid)	{
+		if(ii->list[i]->tid==tid)	{
 			return ii->list[i]->postings;
 		}
 	}
@@ -29,12 +29,12 @@ posting_alist* get_postings(invindex* ii, uint termid)
 }
 
 //return: 0 or positve for tf, -1 for result of not found
-int get_tf_from_postings(posting_alist* postings, uint docid)
+int get_tf_from_postings(posting_alist* postings, __u32 did)
 {
 	int i;
-	//printf("%d(psize), %u(docid)\n",postings->size, docid);
+	//printf("%d(psize), %u(did)\n",postings->size, did);
 	for(i=0;i<postings->size;i++)	{
-		if(postings->list[i]->docid==docid)	{
+		if(postings->list[i]->did==did)	{
 			return postings->list[i]->tf;
 		}
 	}
@@ -42,18 +42,18 @@ int get_tf_from_postings(posting_alist* postings, uint docid)
 }
 
 //return: 0 or positive for tf, -1 for term entry but no doc entry, -2 for no term entry 
-int get_tf_from_ii(invindex* ii, uint docid, uint termid, posting_alist** postings)
+int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings)
 {
-	posting_alist* _postings = get_postings(ii, termid);
+	posting_alist* _postings = get_postings(ii, tid);
 	int tf;
 	if(!_postings)	{
 		//printf("gettf: no term entry!\n");
 		return -2;
 	}
 	else {
-		tf = get_tf_from_postings(_postings, docid);
+		tf = get_tf_from_postings(_postings, did);
 		if(tf>=0)	{
-			//printf("gettf: term entry and posting exist!did=%u,tid=%u,tf=%u\n", docid, termid, tf);
+			//printf("gettf: term entry and posting exist!did=%u,tid=%u,tf=%u\n", did, tid, tf);
 			return tf;
 		}
 		else	{
@@ -66,41 +66,41 @@ int get_tf_from_ii(invindex* ii, uint docid, uint termid, posting_alist** postin
 
 
 //return: 0 for success, 1 if exist for the same doc
-int add_tf_to_ii(invindex* ii, uint docid, uint termid, uint tf)
+int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf)
 {
-	invindex_entry* ie;
+	ii_term* ie;
 	posting_alist* postings;
 	posting* p;
 	int _tf;
 
 	postings = 0;
-	_tf = get_tf_from_ii(ii, docid, termid, &postings);
+	_tf = get_tf_from_ii(ii, did, tid, &postings);
 	//printf("_tf=%u, truefalse=%d\n",_tf, (-2>=0));
 	if(_tf>=0)	{
-		printf("add_tf_to_ii failure! old tf exist: docid=%d, termid=%d, tf=%d, old tf=%d\n", docid, termid, tf, _tf);
+		printf("add_tf_to_ii failure! old tf exist: did=%d, tid=%d, tf=%d, old tf=%d\n", did, tid, tf, _tf);
 		return 1;
 	}
 	else {
-		if(docid%1000<10)	{
-		printf("add_tf_to_ii docid=%d, termid=%d, tf=%d\n", docid, termid, tf);
+		if(did%1000<10)	{
+			printf("add_tf_to_ii did=%d, tid=%d, tf=%d\n", did, tid, tf);
 		}
 		p = (posting*)malloc(sizeof(posting));
-		p->docid = docid;
+		p->did = did;
 		p->tf = tf;
 		if(_tf==-1)	{
-//			printf("new posting, postings=%d\n", postings);
+			//			printf("new posting, postings=%d\n", postings);
 			add_posting(postings, p);
 		}
 		else	{
-			ie = (invindex_entry*)malloc(sizeof(invindex_entry));
-			ie->termid = termid;
+			ie = (ii_term*)malloc(sizeof(ii_term));
+			ie->tid = tid;
 
 			postings = create_posting_alist();
 			//printf("new postings\n");
 			add_posting(postings, p);
 			ie->postings = postings;
 
-			add_invindex_entry(ii, ie);
+			add_ii_term(ii, ie);
 		}
 	}
 	return 0;

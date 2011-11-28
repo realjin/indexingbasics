@@ -84,4 +84,9 @@ int remove_##type(type##_alist* l, int n)	\
 	}	\
 	return 0;	\
 }
+
+
+//add expand list to specified size func ( or create in specific size fun)
+
+
 #endif

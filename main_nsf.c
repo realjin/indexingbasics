@@ -10,14 +10,14 @@
 
 int main()
 {
-	//invindex* ii;
-	//ii = create_invindex_entry_alist();
+	//ii* ii;
+	//ii = create_ii_entry_alist();
 	//add_tf_to_ii(ii, 12319, 350, 3);
 
 	id_map* idmap;
 
 	doc_terms_alist* dlist;	
-	invindex* ii;
+	ii* ii;
 
 	char line[200];
 	FILE* f;
@@ -43,7 +43,7 @@ int main()
 	//f = popen("find ../dataset/nsf/abstract -type f -printf '%T@ %p\n' | sed 's/^[^ ]* //'", "r");
 	f = popen("find ../dataset/nsf/bow -type f -printf '%T@ %p\n' | grep \"docwords\" | sort -k 2 -n | sed 's/^[^ ]* //'", "r");
 	n = 0;
-	ii = create_invindex();
+	ii = create_ii();
 	while((fgets(line,sizeof(line),f))!=0)	{
 		fns[n] = (char*)malloc(sizeof(line));
 		memcpy(fns[n], line, strlen(line)-1);
