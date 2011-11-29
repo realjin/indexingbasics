@@ -11,18 +11,17 @@
 
 int main()
 {
-	//ii* ind = create_ii_term_alist();
+	ii* ind = create_ii_term_alist();
 	ii* loaded;
 
-/*
 	add_tf_to_ii(ind, 1, 167, 1);
 	add_tf_to_ii(ind, 1, 301, 2);
 	add_tf_to_ii(ind, 2, 301, 2);
 	add_tf_to_ii(ind, 1, 314, 1);
 
 	save_ii(ind, "ii.dat");
-*/
-	loaded = load_ii("full.dat");
+	//loaded = load_ii("full.dat");
+	loaded = load_ii("ii.dat");
 
 	ii_show(loaded);
 

@@ -21,7 +21,7 @@ static ii_term* desrlz_iisterm_header(iis_term_header* h)
 	}
 	
 	ii_term* t = (ii_term*)malloc(sizeof(ii_term));
-	t->tid = h->tid[0]<<16 + h->tid[1]<<8 + h->tid[2];
+	t->tid = (h->tid[0]<<16) + (h->tid[1]<<8) + (h->tid[2]);
 	t->postings = create_posting_alist();
 	return t;
 }
@@ -69,7 +69,7 @@ int save_ii(ii* ind, char* fn)
 		h = srlz_iiterm(t);
 		//write;
 		fwrite((void*)(&h->flag), sizeof(__u8), 1, f);
-		fwrite((void*)h->tid, sizeof(__u8), 3, f);
+		fwrite((void*)h->tid, sizeof(__u8), 3, f);	//mmm:removed temporarily
 		fwrite((void*)(&h->df), sizeof(__u32), 1, f);
 		free(h);
 		for(j=0;j<t->postings->size;j++)	{
