@@ -128,3 +128,109 @@ di* create_di()
 {
 	return create_di_doc_alist();
 }
+
+di_dterm* di_create_dterm()
+{
+	di_dterm* dt = (di_dterm*)malloc(sizeof(di_dterm));
+	return dt;
+}
+
+di_dterm* di_get_dterm(di_doc* d, __u32 tid)
+{
+	int i;
+	if(!d)	{
+		printf("di_get_term error! (doc null)\n");
+		return 0;
+	}
+
+	for(i=0;i<d->terms->size;i++)	{
+		if(d->terms->list[i]->tid == tid)	{
+			return d->terms->list+i;
+		}
+	}
+
+	printf("di_get_term error! (doc does not have term info with tid %d)\n", tid);
+	return 0;
+}
+
+di_doc* di_create_doc()
+{
+	di_doc* d = (di_doc*)malloc(sizeof(di_doc));
+	d->terms = create_di_dterm_alist();
+	return d;
+}
+
+di_doc* di_get_doc(di* ind, __u32 did)
+{
+	int i;
+	printf("in get doc did=%d\n",did);
+	for(i=0;i<ind->size;i++)	{
+		if(ind->list[i]->did == did)	{
+			printf("get doc ok!!! i=%d\n", i);
+			return ind->list[i];
+		}
+	}	
+	
+	return 0;
+}
+
+int di_add_doc(di* ind, di_doc* d)
+{
+	return add_di_doc(ind, d);
+}
+
+int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
+{
+	di_doc* d = di_get_doc(ind, did);
+	di_dterm* dt;
+
+#if 1
+	if(did%1000<10)	{
+		printf("in add_tf_to_di: did = %d, tid = %d\n", did, tid);
+	}
+#endif
+
+	if(!d)	{
+		d = di_create_doc();
+		d->did = did;
+
+		dt = di_create_dterm();
+		dt->tid = tid;
+		dt->tf = tf;
+
+		add_di_dterm(d->terms,dt);
+
+		return di_add_doc(ind, d);
+	}
+	else	{
+		printf("d exist! ind->list[0]->did=%d, addr=%x\n",ind->list[0]->did, &(ind->list[0]));
+		printf("d exist! d->did=%d, d=%x\n", d->did, d);
+		if(!di_get_dterm(d, tid))	{
+
+			dt = di_create_dterm();
+			dt->tid = tid;
+			dt->tf = tf;
+
+			add_di_dterm(d->terms, dt);
+
+			return 0;
+		}
+		else	{
+			printf("term with tid %d already exist in doc with did %d!\n", tid, did);
+			return -1;
+		}
+	}
+}
+
+void di_show(di* ind)
+{
+	int i,j;
+	printf("ind size=%d\n", ind->size);
+	for(i=0;i<ind->size;i++)	{
+		printf("doc #%d : (valid term kind=%d)\n", ind->list[i]->did, ind->list[i]->terms->size);
+		for(j=0;j<ind->list[i]->terms->size;j++)	{
+			printf("term %d: +%d\n",ind->list[i]->terms->list[j]->tid, ind->list[i]->terms->list[j]->tf);
+		}
+		printf("==================\n");
+	}
+}

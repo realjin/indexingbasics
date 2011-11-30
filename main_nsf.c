@@ -81,6 +81,7 @@ int main1()
 	pclose(f);
 	dlist = nsf_create_doc_terms_list(fns, n);
 	printf("---toadd-----dlist size=%d\n", dlist->size);
+
 	for(i=0;i<dlist->size;i++)	{
 		add_tf_to_ii(ii,dlist->list[i]->docid, dlist->list[i]->termid, dlist->list[i]->tf);
 	}
