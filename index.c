@@ -7,8 +7,8 @@
 alisttpl_struct_impl(posting);
 alisttpl_struct_impl(ii_term);
 
-alisttpl_struct_impl(terminfo);
-alisttpl_struct_impl(di_entry);
+alisttpl_struct_impl(di_dterm);
+alisttpl_struct_impl(di_doc);
 
 //desc: wrapper method
 ii* create_ii()
@@ -113,8 +113,18 @@ void ii_show(ii* ind)
 	for(i=0;i<ind->size;i++)	{
 		printf("term #%d : (df=%d)\n", ind->list[i]->tid, ind->list[i]->postings->size);
 		for(j=0;j<ind->list[i]->postings->size;j++)	{
-			printf("@doc%d, +%d\n",ind->list[i]->postings->list[j]->did, ind->list[i]->postings->list[j]->tf);
+			//printf("@doc%d, +%d\n",ind->list[i]->postings->list[j]->did, ind->list[i]->postings->list[j]->tf);
 		}
 		printf("==================\n");
 	}
+}
+
+
+
+/*---------------------------------------*
+ *          Document index op            *
+ *---------------------------------------*/
+di* create_di()
+{
+	return create_di_doc_alist();
 }

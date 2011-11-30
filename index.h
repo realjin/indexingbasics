@@ -16,7 +16,7 @@
 typedef struct _posting	{
 	__u32 did;
 	__u32 tf;
-} posting;
+} posting;	//doc info(related to a term)
 //rename to ii_posting
 alisttpl_struct(posting);
 typedef struct _ii_term {
@@ -30,23 +30,25 @@ typedef ii_term_alist ii;
 /*-----------------------*
  *  Document index decl  *
  *-----------------------*/
-typedef struct _terminfo	{
+typedef struct _di_dterm	{
 	__u32 tid;
 	__u32 tf;
-} terminfo;
-alisttpl_struct(terminfo);
+} di_dterm;	//term info (in document)
+alisttpl_struct(di_dterm);
 
-typedef struct _di_entry	{
+typedef struct _di_doc	{
 	int did;
-	terminfo_alist* tinfos;
-} di_entry;
-alisttpl_struct(di_entry);
+	di_dterm_alist* terms;
+} di_doc;
+alisttpl_struct(di_doc);
 
-typedef di_entry_alist di;
+typedef di_doc_alist di;
 
 /*-----------------------*
  *  Inverted index op    *
  *-----------------------*/
+//two approaches to construction ii:
+//1. add <did, tid, tf> tuple
 ii* create_ii();
 posting_alist* get_postings(ii* ii, __u32 tid);
 int get_tf_from_postings(posting_alist* postings, __u32 did);
@@ -54,4 +56,9 @@ int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings);
 int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf);
 void ii_show(ii* ind);
 
+/*-----------------------*
+ *  Document index op    *
+ *-----------------------*/
+//two approaches to construction ii:
+//1. add <did, tid, tf> tuple
 #endif
