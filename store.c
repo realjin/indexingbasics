@@ -156,6 +156,7 @@ static di_doc* desrlz_disdoc_header(dis_doc_header* h)
 	
 	di_doc* d = (di_doc*)malloc(sizeof(di_doc));
 	d->did = (h->did[0]<<16) + (h->did[1]<<8) + (h->did[2]);
+//	printf("d->did=%d\n", d->did);
 	d->terms = create_di_dterm_alist();
 	return d;
 }
@@ -201,6 +202,7 @@ int save_di(di* ind, char* fn)
 	for(i=0;i<ind->size;i++)	{
 		d = ind->list[i];
 		h = srlz_didoc(d);
+		printf("in write\n");
 		//write;
 		fwrite((void*)(&h->flag), sizeof(__u8), 1, f);
 		fwrite((void*)h->did, sizeof(__u8), 3, f);	//mmm:removed temporarily
@@ -247,7 +249,12 @@ di* load_di(char* fn)
 		}
 		fread((void*)h->did, sizeof(__u8), 3, f);
 		fread((void*)(&h->nt), sizeof(__u32), 1, f);
-		//printf("header tid=%d:%d:%d, df=%d\n", h->tid[0],h->tid[1],h->tid[2], h->df);
+
+#if 1
+		if(h->did[0]%1000==1 && h->did[1]<3 && h->did[2]<3)	{
+			printf("header did=%d:%d:%d, nt=%d\n", h->did[0],h->did[1],h->did[2], h->nt);
+		}
+#endif
 		d = desrlz_disdoc_header(h);
 		for(i=0;i<h->nt;i++)	{
 			//be = load(8byte);

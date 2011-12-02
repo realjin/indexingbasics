@@ -36,10 +36,17 @@ int main2()
 }
 
 
-//test di creation
 int main()
 {
-	di* ind = create_di();
+	di* ind;
+	ind = load_di("full.di");
+	di_dterm* dt = ind->list[29]->terms->list[5];
+	printf("29th doc 5th term: did=%d, tid=%d, tf=%d\n", ind->list[29]->did, dt->tid, dt->tf);
+}
+//test di creation
+int main3()
+{
+	di* ind;
 
 	FILE* f;
 	char* fns[150000];
@@ -49,6 +56,7 @@ int main()
 	doc_terms_alist* dlist;	
 
 	f = popen("find ../dataset/nsf/bow -type f -printf '%T@ %p\n' | grep \"docwords\" | sort -k 2 -n | sed 's/^[^ ]* //'", "r");
+	//f = popen("find ../dataset/nsf/tmp -type f -printf '%T@ %p\n' | grep \"docwords\" | sort -k 2 -n | sed 's/^[^ ]* //'", "r");
 	n = 0;
 	while((fgets(line,sizeof(line),f))!=0)	{
 		fns[n] = (char*)malloc(sizeof(line));
@@ -63,12 +71,17 @@ int main()
 #endif
 	}
 	pclose(f);
+
+	/*
 	dlist = nsf_create_doc_terms_list(fns, n);
 	printf("---toadd-----dlist size=%d\n", dlist->size);
 
 	for(i=0;i<dlist->size;i++)	{
 		add_tf_to_di(ind,dlist->list[i]->docid, dlist->list[i]->termid, dlist->list[i]->tf);
 	}
+	*/
+
+	ind = nsf_create_di(fns, n);
 
 	save_di(ind, "full.di");	
 

@@ -58,10 +58,12 @@ di* nsf_create_di(char* fns[], int n)
 
 	for(i=0;i<n;i++)	{
 		f = fopen(fns[i], "r");
+		/*
 		if(fgets(line, sizeof(line), f)==0)	{
 			printf("nsf_create_di: first line of file %s reading error!\n", fns[i]);
 			return -1;
 		}
+		*/
 
 		/*
 		d = (doc_terms*)malloc(sizeof(doc_terms));
@@ -75,12 +77,18 @@ di* nsf_create_di(char* fns[], int n)
 		while( (fgets(line,sizeof(line), f)) !=0 ){
 			dtpair = (doc_terms*)malloc(sizeof(doc_terms));
 			sscanf(line, "%d %d %d", &dtpair->docid, &dtpair->termid, &dtpair->tf);
-
+#if 1
+			if(dtpair->docid%1000 < 5)	{
+				printf("[progress] did=%d\n", dtpair->docid);
+			}
+#endif
 			if(dtpair->docid!=did)	{	//if term in same doc
 				if(d)	{
 					di_add_doc(ind, d);
+					//printf("ind size=%d\n", ind->size);
 				}
-				d = (di_doc*)malloc(sizeof(di_doc));
+				//d = (di_doc*)malloc(sizeof(di_doc));
+				d = di_create_doc();
 				d->did = dtpair->docid;
 				did = dtpair->docid;
 			}
@@ -92,6 +100,10 @@ di* nsf_create_di(char* fns[], int n)
 			di_add_dterm(d, dt);
 
 			free(dtpair);
+		}
+		if(d)	{
+			di_add_doc(ind, d);
+			//printf("ind size=%d\n", ind->size);
 		}
 
 		fclose(f);
