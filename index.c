@@ -149,7 +149,7 @@ di_dterm* di_get_dterm(di_doc* d, __u32 tid)
 		}
 	}
 
-	printf("di_get_term error! (doc does not have term info with tid %d)\n", tid);
+	//printf("di_get_term error! (doc does not have term info with tid %d)\n", tid);
 	return 0;
 }
 
@@ -163,10 +163,10 @@ di_doc* di_create_doc()
 di_doc* di_get_doc(di* ind, __u32 did)
 {
 	int i;
-	printf("in get doc did=%d\n",did);
+	//printf("in get doc did=%d\n",did);
 	for(i=0;i<ind->size;i++)	{
 		if(ind->list[i]->did == did)	{
-			printf("get doc ok!!! i=%d\n", i);
+			//printf("get doc ok!!! i=%d\n", i);
 			return ind->list[i];
 		}
 	}	
@@ -174,10 +174,12 @@ di_doc* di_get_doc(di* ind, __u32 did)
 	return 0;
 }
 
+/*
 int di_add_doc(di* ind, di_doc* d)
 {
 	return add_di_doc(ind, d);
 }
+*/
 
 int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
 {
@@ -200,11 +202,11 @@ int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
 
 		add_di_dterm(d->terms,dt);
 
-		return di_add_doc(ind, d);
+		return add_di_doc(ind, d);
 	}
 	else	{
-		printf("d exist! ind->list[0]->did=%d, addr=%x\n",ind->list[0]->did, &(ind->list[0]));
-		printf("d exist! d->did=%d, d=%x\n", d->did, d);
+		//printf("d exist! ind->list[0]->did=%d, addr=%x\n",ind->list[0]->did, &(ind->list[0]));
+		//printf("d exist! d->did=%d, d=%x\n", d->did, d);
 		if(!di_get_dterm(d, tid))	{
 
 			dt = di_create_dterm();
@@ -221,6 +223,40 @@ int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
 		}
 	}
 }
+
+/*
+	add doc to di with no duplicate added
+*/
+int di_add_doc(di* ind, di_doc* d)
+{
+	int i,j,k,l;
+	for(i=0;i<ind->size;i++)	{
+		if(ind->list[i]->did == d->did)	{
+			break;
+		}
+	}
+	if(i==ind->size)	{
+		add_di_doc(ind, d);
+	}
+	else	{
+		for(j=0;j<d->terms->size;j++)	{
+			for(k=0;k<ind->list[i]->terms->size;k++)	{
+				if(d->terms->list[j]->tid == ind->list[i]->terms->list[k]->tid)	{
+					break;
+				}
+			}
+			if(k==ind->list[i]->terms->size)	{
+				add_di_dterm(ind->list[i], d->terms->list[j]);
+			}
+			else	{
+				printf("same term(tid=%d) in doc(did=%d) exist!\n", ind->list[i]->did, d->terms->list[j]->tid);
+			}
+		}
+	}
+
+	return 0;
+}
+
 
 void di_show(di* ind)
 {

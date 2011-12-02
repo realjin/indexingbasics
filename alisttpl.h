@@ -11,7 +11,7 @@
  */
 
 #define NUM_ALIST_INITCAPACITY 100
-#define NUM_ALIST_MAXCAPACITY 5*1000*1000
+#define NUM_ALIST_MAXCAPACITY 30*1000*1000
 #define NUM_ALIST_INCREMENT 50
 
 #define alisttpl_struct(type)	\

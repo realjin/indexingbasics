@@ -14,7 +14,7 @@
 
 
 //test di saveing and loading
-int main()
+int main2()
 {
 	di* tosave = create_di();
 	di* loaded;
@@ -37,7 +37,7 @@ int main()
 
 
 //test di creation
-int main2()
+int main()
 {
 	di* ind = create_di();
 
@@ -56,9 +56,11 @@ int main2()
 		fns[n][strlen(line)-1]=0;
 		printf("%s\n",fns[n]);
 		n++;
+#if 0
 		if(n==1)	{
 			break;
 		}
+#endif
 	}
 	pclose(f);
 	dlist = nsf_create_doc_terms_list(fns, n);
@@ -67,6 +69,8 @@ int main2()
 	for(i=0;i<dlist->size;i++)	{
 		add_tf_to_di(ind,dlist->list[i]->docid, dlist->list[i]->termid, dlist->list[i]->tf);
 	}
+
+	save_di(ind, "full.di");	
 
 }
 
