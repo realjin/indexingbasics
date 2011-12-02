@@ -61,14 +61,15 @@ void ii_show(ii* ind);
  *-----------------------*/
 //two approaches to construction ii:
 //1. add <did, tid, tf> tuple
+//local
 di* create_di();
 di_dterm* di_create_dterm();
 di_dterm* di_get_dterm(di_doc* d, __u32 tid);
 di_doc* di_create_doc();
 di_doc* di_get_doc(di* ind, __u32 did);
-//int di_add_doc(di* ind, di_doc* d);
 int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf);
-//int add_doc_to_di(di* ind, di_doc* d);
+//api
+int di_add_dterm(di_doc* d, di_dterm* dt);
 int di_add_doc(di* ind, di_doc* d);
 void di_show(di* ind);
 #endif

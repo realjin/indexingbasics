@@ -1,5 +1,7 @@
 #include "alisttpl.h"
 
+#include "index.h"
+
 
 typedef struct _idmap_entry	{
 	uint id;
@@ -18,5 +20,8 @@ alisttpl_struct(doc_terms);
 id_map* nsf_create_id_map(char* fns[], int n);
 void nsf_load_bow_idnsfid(id_map* m, char* fn);
 
+void nsf_load_doclist(char* fn);
+
+di* nsf_create_di(char* fns[], int n);
 void nsf_load_doc_terms(doc_terms_alist* dlist, char* fn);
 doc_terms_alist* nsf_create_doc_terms_list(char* fns[], int n);

@@ -42,6 +42,64 @@ void nsf_load_bow_idnsfid(id_map* m, char* fn)
 	//printf("map size now=%d\n", m->size);
 }
 //------------------------------------------doc terms
+di* nsf_create_di(char* fns[], int n)
+{
+	di* ind;
+	
+	int i;
+	FILE* f;
+	__u32 did;
+	char line[100];
+	doc_terms* dtpair;
+	di_doc* d;
+	di_dterm* dt;
+
+	ind = create_di();
+
+	for(i=0;i<n;i++)	{
+		f = fopen(fns[i], "r");
+		if(fgets(line, sizeof(line), f)==0)	{
+			printf("nsf_create_di: first line of file %s reading error!\n", fns[i]);
+			return -1;
+		}
+
+		/*
+		d = (doc_terms*)malloc(sizeof(doc_terms));
+		sscanf(line, "%d %d %d", &d->docid, &d->termid, &d->tf);
+		did = d->docid;
+		*/
+
+		did = -1;
+		d = 0;
+			
+		while( (fgets(line,sizeof(line), f)) !=0 ){
+			dtpair = (doc_terms*)malloc(sizeof(doc_terms));
+			sscanf(line, "%d %d %d", &dtpair->docid, &dtpair->termid, &dtpair->tf);
+
+			if(dtpair->docid!=did)	{	//if term in same doc
+				if(d)	{
+					di_add_doc(ind, d);
+				}
+				d = (di_doc*)malloc(sizeof(di_doc));
+				d->did = dtpair->docid;
+				did = dtpair->docid;
+			}
+
+			dt = (di_dterm*)malloc(sizeof(di_dterm));
+			dt->tid = dtpair->termid;
+			dt->tf = dtpair->tf;
+
+			di_add_dterm(d, dt);
+
+			free(dtpair);
+		}
+
+		fclose(f);
+	}
+
+	return ind;
+}
+
 void nsf_load_doc_terms(doc_terms_alist* dlist, char* fn)
 {
 	doc_terms* d;
@@ -51,13 +109,13 @@ void nsf_load_doc_terms(doc_terms_alist* dlist, char* fn)
 
 	while( (fgets(line,sizeof(line), f)) !=0 ){
 		d = (doc_terms*)malloc(sizeof(doc_terms));
-	//	printf("line=%s\n", line);
+		//	printf("line=%s\n", line);
 		sscanf(line, "%d %d %d", &d->docid, &d->termid, &d->tf);
 		add_doc_terms(dlist, d);
 	}
 
 	fclose(f);
-		
+
 
 }
 
@@ -71,5 +129,5 @@ doc_terms_alist* nsf_create_doc_terms_list(char* fns[], int n)
 	}
 
 	return dlist;
-	
+
 }

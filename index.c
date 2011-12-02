@@ -224,6 +224,23 @@ int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
 	}
 }
 
+int di_add_dterm(di_doc* d, di_dterm* dt)
+{
+	int i;
+	for(i=0;i<d->terms->size;i++)	{
+		if(d->terms->list[i]->tid == dt->tid)	{
+			printf("[di_add_dterm] same term(tid=%d) in doc(did=%d) exist!\n", d->did, dt->tid);
+			return -1;
+		}
+	}
+	if(i==d->terms->size)	{
+		add_di_dterm(d->terms, dt);
+	}
+
+	return 0;
+}
+
+
 /*
 	add doc to di with no duplicate added
 */
@@ -240,17 +257,7 @@ int di_add_doc(di* ind, di_doc* d)
 	}
 	else	{
 		for(j=0;j<d->terms->size;j++)	{
-			for(k=0;k<ind->list[i]->terms->size;k++)	{
-				if(d->terms->list[j]->tid == ind->list[i]->terms->list[k]->tid)	{
-					break;
-				}
-			}
-			if(k==ind->list[i]->terms->size)	{
-				add_di_dterm(ind->list[i], d->terms->list[j]);
-			}
-			else	{
-				printf("same term(tid=%d) in doc(did=%d) exist!\n", ind->list[i]->did, d->terms->list[j]->tid);
-			}
+				di_add_dterm(ind->list[i], d->terms->list[j]);
 		}
 	}
 
