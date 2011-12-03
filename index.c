@@ -10,10 +10,21 @@ alisttpl_struct_impl(ii_term);
 alisttpl_struct_impl(di_dterm);
 alisttpl_struct_impl(di_doc);
 
+/*---------------------------------------*
+ *          Document index op            *
+ *---------------------------------------*/
+
 //desc: wrapper method
 ii* create_ii()
 {
 	return create_ii_term_alist();
+}
+
+ii_term* ii_create_term()
+{
+	ii_term* t = (ii_term*)malloc(sizeof(ii_term));
+	t->postings = create_posting_alist();
+	return t;
 }
 
 //return: 0 if failure
@@ -64,6 +75,16 @@ int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings)
 	}
 }
 
+ii_term* ii_get_term(ii* ind, __u32 tid)
+{
+	int i;
+	for(i=0;i<ind->size;i++)	{
+		if(ind->list[i]->tid == tid)	{
+			return ind->list[i];
+		}
+	}
+	return 0;
+}
 
 //return: 0 for success, 1 if exist for the same doc
 int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf)
@@ -170,16 +191,16 @@ di_doc* di_get_doc(di* ind, __u32 did)
 			return ind->list[i];
 		}
 	}	
-	
+
 	return 0;
 }
 
 /*
-int di_add_doc(di* ind, di_doc* d)
-{
-	return add_di_doc(ind, d);
-}
-*/
+	 int di_add_doc(di* ind, di_doc* d)
+	 {
+	 return add_di_doc(ind, d);
+	 }
+ */
 
 int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf)
 {
@@ -242,8 +263,8 @@ int di_add_dterm(di_doc* d, di_dterm* dt)
 
 
 /*
-	add doc to di with no duplicate added
-*/
+	 add doc to di with no duplicate added
+ */
 int di_add_doc(di* ind, di_doc* d)
 {
 	int i,j,k,l;
@@ -257,7 +278,7 @@ int di_add_doc(di* ind, di_doc* d)
 	}
 	else	{
 		for(j=0;j<d->terms->size;j++)	{
-				di_add_dterm(ind->list[i], d->terms->list[j]);
+			di_add_dterm(ind->list[i], d->terms->list[j]);
 		}
 	}
 
@@ -277,3 +298,17 @@ void di_show(di* ind)
 		printf("==================\n");
 	}
 }
+
+
+/*---------------------------------------*
+ *             Full index op             *
+ *---------------------------------------*/
+fi* fi_create_fi()
+{
+	fi* ind = (fi*)malloc(sizeof(fi));
+	ind->d = create_di();
+	ind->i = create_ii();
+	ind->docs = (doccol*)malloc(sizeof(doccol));
+	ind->terms = (termcol*)malloc(sizeof(termcol));
+}
+

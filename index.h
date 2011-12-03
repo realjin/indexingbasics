@@ -6,6 +6,9 @@
 #include <linux/types.h>
 #include <alisttpl.h>
 
+#include "doccol.h"
+#include "termcol.h"
+
 //ii: inverted index
 //di: document index
 
@@ -45,14 +48,30 @@ alisttpl_struct(di_doc);
 typedef di_doc_alist di;
 
 /*-----------------------*
+ *    Full index decl    *
+ *-----------------------*/
+typedef struct _fi	{
+	ii* i;
+	di* d;
+	
+	doccol* docs;
+	termcol* terms;
+	
+} fi;
+
+
+/*-----------------------*
  *  Inverted index op    *
  *-----------------------*/
 //two approaches to construction ii:
 //1. add <did, tid, tf> tuple
 ii* create_ii();
+ii_term* ii_create_term();	//!!!: "create": only do malloc, no init!!
 posting_alist* get_postings(ii* ii, __u32 tid);
 int get_tf_from_postings(posting_alist* postings, __u32 did);
 int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings);
+//---api---
+ii_term* ii_get_term(ii* ind, __u32 tid);
 int add_tf_to_ii(ii* ii, __u32 did, __u32 tid, __u32 tf);
 void ii_show(ii* ind);
 
@@ -66,10 +85,16 @@ di* create_di();
 di_dterm* di_create_dterm();
 di_dterm* di_get_dterm(di_doc* d, __u32 tid);
 di_doc* di_create_doc();
-di_doc* di_get_doc(di* ind, __u32 did);
 int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf);
-//api
+//---api---
 int di_add_dterm(di_doc* d, di_dterm* dt);
 int di_add_doc(di* ind, di_doc* d);
+di_doc* di_get_doc(di* ind, __u32 did);
 void di_show(di* ind);
+
+/*-----------------------*
+ *     Full index op     *
+ *-----------------------*/
+//---api---
+fi* fi_create_fi();
 #endif
