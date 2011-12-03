@@ -253,7 +253,7 @@ di* load_di(char* fn)
 		fread((void*)h->did, sizeof(__u8), 3, f);
 		fread((void*)(&h->nt), sizeof(__u32), 1, f);
 
-#if 1
+#if 0
 		if(h->did[0]%1000==1 && h->did[1]<3 && h->did[2]<3)	{
 			printf("header did=%d:%d:%d, nt=%d\n", h->did[0],h->did[1],h->did[2], h->nt);
 		}
