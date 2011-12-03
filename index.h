@@ -4,7 +4,7 @@
 #include "common.h"
 
 #include <linux/types.h>
-#include "alisttpl.h"
+#include <alisttpl.h>
 
 //ii: inverted index
 //di: document index
