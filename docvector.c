@@ -1,5 +1,7 @@
 #include "docvector.h"
 
+#include "store.h"
+
 alisttpl_struct_impl(dv_entry);
 alisttpl_struct_impl(dv_doc);
 
@@ -53,15 +55,13 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 					printf("dv_create_dv_from_fi error, set value failed(ret code%d): did=%d, tid=%d, v=%f\n", ret, di_d->did, di_d->terms->list[j]->tid, v);
 					continue;
 				}
-				else	{
-					add_dv_doc(dv_dlist, dv_d);
-				}
 			}
 			else	{
 				//printf("dv_create_dv_from_fi error, t not exist\n");
 				continue;
 			}	//if(ii_t)
 		} //for(j
+		add_dv_doc(dv_dlist, dv_d);
 	}//for(i
 
 	return dv_dlist;
@@ -92,3 +92,147 @@ int dv_set_value(dv_doc* d, __u32 id, double v)
 		return -1;
 	}
 }
+
+//------------store----------------
+
+dv_docs* dv_load_docs(char* fn)
+{
+	dv_docs* docs;
+
+	FILE* f;
+
+	dv_doc* d;
+	dv_entry* dve;
+	__u32 did;
+	__u32 id;
+	double v;
+
+	int size;	
+	int i;
+
+	__u8 b;
+	__u8 b3[3];
+	__u8 b4[4];
+	__u8 b8[8];
+
+	docs = create_dv_doc_alist();
+
+	__u8 end = _INDEXINGBASICS_STORE_END; 
+
+	f = fopen(fn, "rb");
+
+	while(1)	{
+		fread((void*)(b4), sizeof(__u8), 4, f);
+		if(b4[0]==_INDEXINGBASICS_STORE_END)	{
+			break;
+		}
+
+		d = dv_create_doc();
+
+		if(b4[0]!=_INDEXINGBASICS_STORE_FLAG_DV_DHEADER)	{
+			printf("dv_load_docs error, dheader flag not matched!!!\n");
+			//mmm: free(d), etc
+			return 0;
+		}
+		d->did = (b4[1]<<16) + (b4[2]<<8) + b4[3];
+		//printf("did=%d %d %d\n", b4[1], b4[2], b4[3]);
+#if 0
+		if(d->did%1000==1)	{
+			printf("loading dv: did = %d\n", d->did);
+		}
+#endif
+
+		fread((void*)(b4), sizeof(__u8), 4, f);
+		size = (b4[0]<<24) + (b4[1]<<16) + (b4[2]<<8) + b4[3];
+
+		for(i=0;i<size;i++)	{
+			dve = (dv_entry*)malloc(sizeof(dv_entry));
+			
+			fread((void*)(&b), sizeof(__u8), 1, f);
+			//printf("dbody=%x\n", b);
+			if(b!=_INDEXINGBASICS_STORE_FLAG_DV_DBODY)	{
+				printf("dv_load_docs error, dbody flag not matched!!!\n");
+				return 0;
+			}
+			fread((void*)(b3), sizeof(__u8), 3, f);
+			dve->id = (b3[0]<<16) + (b3[1]<<8) + b3[2];
+			fread((void*)(b8), sizeof(__u8), 4, f);	//first half of double
+
+			fread((void*)(&b), sizeof(__u8), 1, f);	//flag duplicate
+			fread((void*)(b3), sizeof(__u8), 3, f);	//id duplicate
+			fread((void*)(b8+4), sizeof(__u8), 4, f);	//last half of double
+
+			dve->v = *((double*)b8);	//mmm: big endian and small endian sensitive?
+
+			add_dv_entry(d->vector, dve);
+		}
+
+		add_dv_doc(docs, d);
+	}
+
+	return docs;
+
+}
+
+int dv_save_docs(dv_docs* docs, char* fn)
+{
+	int i,j;
+	FILE* f;
+	dv_doc* d;
+	dv_entry* dve;
+
+	__u8 b = 0;
+	__u8 b3[3];
+	__u8 b4[4];
+	__u8 b8[8];
+
+	__u8 end = _INDEXINGBASICS_STORE_END; 
+
+	f = fopen(fn, "wb");
+
+	for(i=0;i<docs->size;i++)	{
+		d = docs->list[i];
+
+		b = _INDEXINGBASICS_STORE_FLAG_DV_DHEADER;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+
+		b = (d->did >> 16) & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+		b = (d->did >> 8) & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+		b = d->did & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+
+		b = (d->vector->size >> 24) & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+		b = (d->vector->size >> 16) & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+		b = (d->vector->size >> 8) & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+		b = d->vector->size & 0xff;
+		fwrite((void*)&b, sizeof(__u8), 1, f);
+
+		for(j=0;j<d->vector->size;j++)	{
+			dve = d->vector->list[j];
+
+			srlz_double(&dve->v, b8);
+
+			b = _INDEXINGBASICS_STORE_FLAG_DV_DBODY;
+			fwrite((void*)&b, sizeof(__u8), 1, f);
+			b3[0] = (dve->id >> 16) & 0xff;
+			b3[1] = (dve->id >> 8) & 0xff;
+			b3[2] = dve->id & 0xff;
+			fwrite((void*)b3, sizeof(__u8), 3, f);
+			fwrite((void*)b8, sizeof(__u8), 4, f);
+
+			fwrite((void*)&b, sizeof(__u8), 1, f);
+			fwrite((void*)b3, sizeof(__u8), 3, f);
+			fwrite((void*)(b8+4), sizeof(__u8), 4, f);
+		}
+	}
+
+	fwrite((void*)&end, sizeof(__u8), 1, f);
+
+	fclose(f);
+}
+

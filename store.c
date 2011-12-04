@@ -324,3 +324,20 @@ fi* load_fi(char* fnprefix)
 
 	return ind;
 }
+
+/*--------------------------------------------------*
+ *     serialization/deserialization   utility      *
+ *--------------------------------------------------*/
+int srlz_double(double* d, __u8* buf)
+{
+	__u32 n = *((__u32*)d);
+	buf[0] = (n >> 56) & 0xff;
+	buf[1] = (n >> 48) & 0xff;
+	buf[2] = (n >> 40) & 0xff;
+	buf[3] = (n >> 32) & 0xff;
+	buf[4] = (n >> 24) & 0xff;
+	buf[5] = (n >> 16) & 0xff;
+	buf[6] = (n >> 8) & 0xff;
+	buf[7] = n & 0xff;
+	return 0;
+}

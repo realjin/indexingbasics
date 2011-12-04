@@ -11,6 +11,8 @@
 #define _INDEXINGBASICS_STORE_FLAG_DI_DHEADER 0x21
 #define _INDEXINGBASICS_STORE_FLAG_DI_DBODYENTRY 0x22
 
+#define _INDEXINGBASICS_STORE_END 0xff
+
 //iis: inverted index storage
 typedef struct _iis_term_header	{
 	__u8 flag;	//for robustness(others are ok even if some 8byte block broken)
@@ -69,4 +71,12 @@ di* load_di(char* fn);
  *--------------------------*/
 int save_fi(fi* ind, char* fnprefix);
 fi* load_fi(char* fnprefix);
+
+
+/*--------------------------------------------------*
+ *     serialization/deserialization   utility      *
+ *--------------------------------------------------*/
+//buf 8 bytes
+int srlz_double(double* d, __u8* buf);
+
 #endif
