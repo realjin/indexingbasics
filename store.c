@@ -330,14 +330,23 @@ fi* load_fi(char* fnprefix)
  *--------------------------------------------------*/
 int srlz_double(double* d, __u8* buf)
 {
-	__u32 n = *((__u32*)d);
+	__u64 n = *((__u64*)d);
+	//printf("double========%f\n", *d);
 	buf[0] = (n >> 56) & 0xff;
+	//printf("buf0=%x\n", buf[0]);
 	buf[1] = (n >> 48) & 0xff;
+	//printf("buf0=%x\n", buf[1]);
 	buf[2] = (n >> 40) & 0xff;
+	//printf("buf0=%x\n", buf[2]);
 	buf[3] = (n >> 32) & 0xff;
+	//printf("buf0=%x\n", buf[3]);
 	buf[4] = (n >> 24) & 0xff;
+	//printf("buf0=%x\n", buf[4]);
 	buf[5] = (n >> 16) & 0xff;
+	//printf("buf0=%x\n", buf[5]);
 	buf[6] = (n >> 8) & 0xff;
+	//printf("buf0=%x\n", buf[6]);
 	buf[7] = n & 0xff;
+	//printf("buf0=%x\n\n", buf[7]);
 	return 0;
 }

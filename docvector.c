@@ -55,6 +55,7 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 					printf("dv_create_dv_from_fi error, set value failed(ret code%d): did=%d, tid=%d, v=%f\n", ret, di_d->did, di_d->terms->list[j]->tid, v);
 					continue;
 				}
+				printf("set doc %d term %d value %f\n", dv_d->did, di_d->terms->list[j]->tid, v);
 			}
 			else	{
 				//printf("dv_create_dv_from_fi error, t not exist\n");
@@ -114,6 +115,11 @@ dv_docs* dv_load_docs(char* fn)
 	__u8 b3[3];
 	__u8 b4[4];
 	__u8 b8[8];
+	__u64 u64;
+	//__u64 u64_rev;
+	//double* adouble;
+
+	//int tmp;
 
 	docs = create_dv_doc_alist();
 
@@ -136,7 +142,7 @@ dv_docs* dv_load_docs(char* fn)
 		}
 		d->did = (b4[1]<<16) + (b4[2]<<8) + b4[3];
 		//printf("did=%d %d %d\n", b4[1], b4[2], b4[3]);
-#if 0
+#if 1
 		if(d->did%1000==1)	{
 			printf("loading dv: did = %d\n", d->did);
 		}
@@ -162,7 +168,12 @@ dv_docs* dv_load_docs(char* fn)
 			fread((void*)(b3), sizeof(__u8), 3, f);	//id duplicate
 			fread((void*)(b8+4), sizeof(__u8), 4, f);	//last half of double
 
-			dve->v = *((double*)b8);	//mmm: big endian and small endian sensitive?
+			u64 = (((__u64)b8[0])<<56) + (((__u64)b8[1])<<48) + (((__u64)b8[2])<<40) +(((__u64)b8[3])<<32) +(((__u64)b8[4])<<24) +(((__u64)b8[5])<<16) +(((__u64)b8[6])<<8) + (__u64)b8[7]; 
+ 
+			//u64_rev = (b8[7]<<56) + (b8[6]<<48) + (b8[5]<<40) + (b8[4]<<32) + (b8[3]<<24) + (b8[2]<<16) + (b8[1]<<8) + b8[0];
+			dve->v = *((double*)&u64);	//mmm: big endian and small endian sensitive?
+
+			//printf("\nv====%f, u64=%lx\n", dve->v, u64);
 
 			add_dv_entry(d->vector, dve);
 		}
@@ -216,6 +227,7 @@ int dv_save_docs(dv_docs* docs, char* fn)
 			dve = d->vector->list[j];
 
 			srlz_double(&dve->v, b8);
+			
 
 			b = _INDEXINGBASICS_STORE_FLAG_DV_DBODY;
 			fwrite((void*)&b, sizeof(__u8), 1, f);

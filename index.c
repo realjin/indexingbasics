@@ -20,11 +20,29 @@ ii* create_ii()
 	return create_ii_term_alist();
 }
 
+int ii_destroy_ii(ii* ind)
+{
+	int i;
+	
+	for(i=0;i<ind->size;i++)	{
+		ii_destroy_term(ind->list[i]);
+	}
+
+	return 0;
+}
+
 ii_term* ii_create_term()
 {
 	ii_term* t = (ii_term*)malloc(sizeof(ii_term));
 	t->postings = create_posting_alist();
 	return t;
+}
+
+int ii_destroy_term(ii_term* t)
+{
+	free(t->postings->list);
+	free(t);
+	return 0;
 }
 
 //return: 0 if failure
@@ -149,7 +167,16 @@ di* create_di()
 {
 	return create_di_doc_alist();
 }
+int di_destroy_di(di* ind)
+{
+	int i;
+	
+	for(i=0;i<ind->size;i++)	{
+		di_destroy_doc(ind->list[i]);
+	}
 
+	return 0;
+}
 di_dterm* di_create_dterm()
 {
 	di_dterm* dt = (di_dterm*)malloc(sizeof(di_dterm));
@@ -180,6 +207,14 @@ di_doc* di_create_doc()
 	d->terms = create_di_dterm_alist();
 	return d;
 }
+int di_destroy_doc(di_doc* d)
+{
+	free(d->terms->list);
+	free(d);
+	return 0;
+}
+
+
 
 di_doc* di_get_doc(di* ind, __u32 did)
 {
@@ -312,3 +347,12 @@ fi* fi_create_fi()
 	ind->terms = (termcol*)malloc(sizeof(termcol));
 }
 
+int fi_destroy_fi(fi* ind)
+{
+	di_destroy_di(ind->d);
+	ii_destroy_ii(ind->i);
+	//free docs
+	//free terms
+	return 0;
+	
+}

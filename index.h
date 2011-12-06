@@ -66,7 +66,9 @@ typedef struct _fi	{
 //two approaches to construction ii:
 //1. add <did, tid, tf> tuple
 ii* create_ii();
+int ii_destroy_ii(ii* ind);
 ii_term* ii_create_term();	//!!!: "create": only do malloc, no init!!
+int ii_destroy_term(ii_term* t);
 posting_alist* get_postings(ii* ii, __u32 tid);
 int get_tf_from_postings(posting_alist* postings, __u32 did);
 int get_tf_from_ii(ii* ii, __u32 did, __u32 tid, posting_alist** postings);
@@ -82,9 +84,11 @@ void ii_show(ii* ind);
 //1. add <did, tid, tf> tuple
 //local
 di* create_di();
+int di_destroy_di(di* ind);
 di_dterm* di_create_dterm();
 di_dterm* di_get_dterm(di_doc* d, __u32 tid);
 di_doc* di_create_doc();
+int di_destroy_doc(di_doc* d);
 int add_tf_to_di(di* ind, __u32 did, __u32 tid, __u32 tf);
 //---api---
 int di_add_dterm(di_doc* d, di_dterm* dt);
@@ -97,4 +101,5 @@ void di_show(di* ind);
  *-----------------------*/
 //---api---
 fi* fi_create_fi();
+int fi_destroy_fi(fi* ind);
 #endif
