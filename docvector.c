@@ -46,10 +46,12 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 		for(j=0;j<di_d->terms->size;j++)	{
 			//printf("dv 2.3.1\n");
 			//ii_t = ii_get_term(ind->i, di_d->terms->list[j]->tid);
-			ii_t = ind->i->list[di_d->terms->list[j]->tid];
+			ii_t = ind->i->list[di_d->terms->list[j]->tid-1];
 			if(ii_t)	{
 				//v = tf/df
 				v = di_d->terms->list[j]->tf * 1.0 / ii_t->postings->size;
+				printf("dv v=%f, tid=%d, tf=%d, pstsize=%d\n", v,di_d->terms->list[j]->tid, di_d->terms->list[j]->tf, ii_t->postings->size); 
+				printf("di_d->terms->list[j]->tid=%d, ii_t->tid=%d\n",di_d->terms->list[j]->tid, ii_t->tid);
 				ret = dv_set_value(dv_d, di_d->terms->list[j]->tid, v);
 				if(ret)	{
 					printf("dv_create_dv_from_fi error, set value failed(ret code%d): did=%d, tid=%d, v=%f\n", ret, di_d->did, di_d->terms->list[j]->tid, v);
@@ -172,6 +174,7 @@ dv_docs* dv_load_docs(char* fn)
  
 			//u64_rev = (b8[7]<<56) + (b8[6]<<48) + (b8[5]<<40) + (b8[4]<<32) + (b8[3]<<24) + (b8[2]<<16) + (b8[1]<<8) + b8[0];
 			dve->v = *((double*)&u64);	//mmm: big endian and small endian sensitive?
+			//printf("dveval=%f\n", dve->v);
 
 			//printf("\nv====%f, u64=%lx\n", dve->v, u64);
 
