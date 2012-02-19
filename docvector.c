@@ -50,14 +50,14 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 			if(ii_t)	{
 				//v = tf/df
 				v = di_d->terms->list[j]->tf * 1.0 / ii_t->postings->size;
-				printf("dv v=%f, tid=%d, tf=%d, pstsize=%d\n", v,di_d->terms->list[j]->tid, di_d->terms->list[j]->tf, ii_t->postings->size); 
-				printf("di_d->terms->list[j]->tid=%d, ii_t->tid=%d\n",di_d->terms->list[j]->tid, ii_t->tid);
+				//printf("dv v=%f, tid=%d, tf=%d, pstsize=%d\n", v,di_d->terms->list[j]->tid, di_d->terms->list[j]->tf, ii_t->postings->size); 
+				//printf("di_d->terms->list[j]->tid=%d, ii_t->tid=%d\n",di_d->terms->list[j]->tid, ii_t->tid);
 				ret = dv_set_value(dv_d, di_d->terms->list[j]->tid, v);
 				if(ret)	{
 					printf("dv_create_dv_from_fi error, set value failed(ret code%d): did=%d, tid=%d, v=%f\n", ret, di_d->did, di_d->terms->list[j]->tid, v);
 					continue;
 				}
-				printf("set doc %d term %d value %f\n", dv_d->did, di_d->terms->list[j]->tid, v);
+				//printf("set doc %d term %d value %f\n", dv_d->did, di_d->terms->list[j]->tid, v);
 			}
 			else	{
 				//printf("dv_create_dv_from_fi error, t not exist\n");
