@@ -3,7 +3,6 @@
 
 #include "common.h"
 
-#include <linux/types.h>
 #include <alisttpl.h>
 
 #include "doccol.h"
