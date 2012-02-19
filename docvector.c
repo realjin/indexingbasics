@@ -28,7 +28,7 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 	printf("dv 1\n");
 
 
-	for(i=0;i<ind->docs->size;i++) {
+	for(i=0;i<ind->doccol->docs->size;i++) {
 #if 1
 		if(i%1000==1)	{
 			printf("processing doc %d\n", i);

@@ -344,8 +344,8 @@ fi* fi_create_fi()
 	fi* ind = (fi*)malloc(sizeof(fi));
 	ind->di = create_di();
 	ind->ii = create_ii();
-	ind->docs = (doccol*)malloc(sizeof(doccol));
-	ind->terms = (termcol*)malloc(sizeof(termcol));
+	ind->doccol = (doccol*)malloc(sizeof(doccol));
+	ind->termcol = (termcol*)malloc(sizeof(termcol));
 }
 
 int fi_destroy_fi(fi* ind)

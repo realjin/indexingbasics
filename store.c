@@ -310,14 +310,14 @@ fi* load_fi(char* fnprefix)
 #endif
 	ind->ii = load_ii(ii_fn);
 
-	ind->docs = (doccol*)malloc(sizeof(doccol));
-	ind->docs->size = ind->di->size;
+	ind->doccol = (doccol*)malloc(sizeof(doccol));
+	ind->doccol->docs->size = ind->di->size;
 #if _NSF_DEBUG_
 	printf("set doccol size ok: %d\n", ind->di->size);
 #endif
 
-	ind->terms = (termcol*)malloc(sizeof(termcol));
-	ind->terms->size = ind->ii->size;
+	ind->termcol = (termcol*)malloc(sizeof(termcol));
+	ind->termcol->terms->size = ind->ii->size;
 #if _NSF_DEBUG_
 	printf("set termcol size ok: %d\n", ind->ii->size);
 #endif

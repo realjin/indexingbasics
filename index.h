@@ -53,8 +53,8 @@ typedef struct _fi	{
 	ii* ii;
 	di* di;
 	
-	doccol* docs;
-	termcol* terms;
+	doccol* doccol;
+	termcol* termcol;
 	
 } fi;
 
