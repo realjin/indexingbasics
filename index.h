@@ -50,8 +50,8 @@ typedef di_doc_alist di;
  *    Full index decl    *
  *-----------------------*/
 typedef struct _fi	{
-	ii* i;
-	di* d;
+	ii* ii;
+	di* di;
 	
 	doccol* docs;
 	termcol* terms;

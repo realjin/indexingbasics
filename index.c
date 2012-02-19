@@ -341,16 +341,16 @@ void di_show(di* ind)
 fi* fi_create_fi()
 {
 	fi* ind = (fi*)malloc(sizeof(fi));
-	ind->d = create_di();
-	ind->i = create_ii();
+	ind->di = create_di();
+	ind->ii = create_ii();
 	ind->docs = (doccol*)malloc(sizeof(doccol));
 	ind->terms = (termcol*)malloc(sizeof(termcol));
 }
 
 int fi_destroy_fi(fi* ind)
 {
-	di_destroy_di(ind->d);
-	ii_destroy_ii(ind->i);
+	di_destroy_di(ind->di);
+	ii_destroy_ii(ind->ii);
 	//free docs
 	//free terms
 	return 0;

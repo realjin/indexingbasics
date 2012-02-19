@@ -40,13 +40,13 @@ dv_docs* dv_create_dv_from_fi(fi* ind)
 		dv_d->did = i+1;
 
 		//di_d = di_get_doc(ind->d, i+1);
-		di_d = ind->d->list[i];
+		di_d = ind->di->list[i];
 		//printf("dv 2.2\n");
 
 		for(j=0;j<di_d->terms->size;j++)	{
 			//printf("dv 2.3.1\n");
 			//ii_t = ii_get_term(ind->i, di_d->terms->list[j]->tid);
-			ii_t = ind->i->list[di_d->terms->list[j]->tid-1];
+			ii_t = ind->ii->list[di_d->terms->list[j]->tid-1];
 			if(ii_t)	{
 				//v = tf/df
 				v = di_d->terms->list[j]->tf * 1.0 / ii_t->postings->size;

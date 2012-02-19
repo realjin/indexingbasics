@@ -285,8 +285,8 @@ int save_fi(fi* ind, char* fnprefix)
 	sprintf(di_fn, "%s.di", fnprefix);
 	sprintf(ii_fn, "%s.ii", fnprefix);
 
-	save_di(ind->d, di_fn);
-	save_ii(ind->i, ii_fn);
+	save_di(ind->di, di_fn);
+	save_ii(ind->ii, ii_fn);
 }
 
 fi* load_fi(char* fnprefix)
@@ -303,23 +303,23 @@ fi* load_fi(char* fnprefix)
 #if _NSF_DEBUG_
 	printf("loading di...\n");
 #endif
-	ind->d = load_di(di_fn);
+	ind->di = load_di(di_fn);
 
 #if _NSF_DEBUG_
 	printf("loading ii...\n");
 #endif
-	ind->i = load_ii(ii_fn);
+	ind->ii = load_ii(ii_fn);
 
 	ind->docs = (doccol*)malloc(sizeof(doccol));
-	ind->docs->size = ind->d->size;
+	ind->docs->size = ind->di->size;
 #if _NSF_DEBUG_
-	printf("set doccol size ok: %d\n", ind->d->size);
+	printf("set doccol size ok: %d\n", ind->di->size);
 #endif
 
 	ind->terms = (termcol*)malloc(sizeof(termcol));
-	ind->terms->size = ind->i->size;
+	ind->terms->size = ind->ii->size;
 #if _NSF_DEBUG_
-	printf("set termcol size ok: %d\n", ind->i->size);
+	printf("set termcol size ok: %d\n", ind->ii->size);
 #endif
 
 	return ind;
