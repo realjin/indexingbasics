@@ -9,7 +9,7 @@ typedef struct _doccol	{
 */
 
 typedef struct _doc {
-	__u32 did;
+	__u32 id;
 	//mmm: other members
 } doc;
 
