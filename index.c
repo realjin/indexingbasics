@@ -46,6 +46,7 @@ int ii_destroy_term(ii_term* t)
 }
 
 //return: 0 if failure
+//mmm: should be renamed ii_get_postings
 posting_alist* get_postings(ii* ii, __u32 tid)
 {
 	int i;

@@ -1,9 +1,9 @@
 #ifndef _INDEXINGBASICS_INDEX_
 #define _INDEXINGBASICS_INDEX_
 
-#include "common.h"
-
 #include <alisttpl.h>
+
+#include "common.h"
 
 #include "doccol.h"
 #include "termcol.h"
